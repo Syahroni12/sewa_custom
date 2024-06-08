@@ -31,7 +31,7 @@ return new class extends Migration
             $table->integer("total_denda")->nullable();
             $table->enum("status_pengembalian",['belum','sudah']);
             $table->enum("status_konfirmasi",['belum_terkonfirmasi','sudah_terkonfirmasi','tidak_terkonfirmasi'])->default('belum_terkonfirmasi');
-            $table->enum("model_bayar",['cod','tf']);
+            $table->enum("model_bayar",['cod','tf'])->nullable();
             // $table->string("bukti_bayar")->nullable();
             $table->string("bukti_bayar")->nullable();
             $table->integer("total_ongkir")->nullable();

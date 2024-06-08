@@ -109,7 +109,7 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form action="{{ route('konfirmasi_pesanan') }}" method="post" enctype="multipart/form-data">
+                    <form action="{{ route('pengembalian_dan_bayar') }}" method="post" enctype="multipart/form-data">
                         @csrf
                         <div class="modal-body">
                             <div class="form-group mb-3">
@@ -124,6 +124,14 @@
                                 <input type="text" class="form-control" name="kurang_bayar" id="kurang_bayar" readonly>
                             </div>
                             <div class="form-group mb-3">
+                                <label class="col-form-label">Bayar Awal</label>
+                                <input type="text" class="form-control" name="bayar1" id="bayar1" readonly>
+                            </div>
+                            <div class="form-group mb-3">
+                                <label class="col-form-label">Kembalian Awal</label>
+                                <input type="text" class="form-control" name="kembalian1" id="kembalian1" readonly>
+                            </div>
+                            <div class="form-group mb-3">
                                 <label class="col-form-label">Denda</label>
                                 <input type="text" class="form-control" name="total_denda" id="total_denda"
                                     oninput="validateAndUpdateDenda(this)">
@@ -136,13 +144,27 @@
                             </div>
                             <div class="form-group mb-3">
                                 <label class="col-form-label">Bayar</label>
-                                <input type="text" class="form-control" name="bayar" id="bayar"
+                                <input type="text" class="form-control" name="bayar" id="bayar" value="0"
                                     oninput="validateAndFormatCurrency(this)">
                             </div>
                             <div class="form-group mb-3">
                                 <label class="col-form-label">Kembalian</label>
                                 <input type="text" class="form-control" name="kembalian" id="kembalian"     value="0" readonly>
                             </div>
+                            <div class="form-group mb-3">
+                                <label class="col-form-label">Model Pembayaran</label>
+                                <select name="model_bayar" id="model_bayar" class="form-control">
+                                    <option value="cod">CASH</option>
+                                    <option value="tf">TF</option>
+                                </select>
+                            </div>
+                            <div class="form-group mb-3"  id="bukti_bayar_input">
+                                <label class="col-form-label">Bukti bayar</label>
+                                <input type="file" class="form-control" name="bukti_bayar">
+                            </div>
+                            
+
+
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -153,6 +175,25 @@
             </div>
         </div>
         <script>
+            //fungsi untuk ketika model pembayaran berubah
+        function toggleBuktiBayar() {
+            var modelPembayaran = document.getElementById("model_bayar").value;
+            var buktiBayar = document.getElementById("bukti_bayar_input");
+            if (modelPembayaran === "tf") {
+                buktiBayar.style.display = "block";
+            } else {
+                buktiBayar.style.display = "none";
+                buktiBayar.value = ""; // Set nilai menjadi null jika model pembayaran bukan TF
+            }
+        }
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set initial state
+            toggleBuktiBayar();
+            // Add event listener to dropdown
+            document.getElementById("model_bayar").addEventListener("change", toggleBuktiBayar);
+        });
+
+
             function formatCurrency(value) {
 
                 return value.toLocaleString('id-ID', {
@@ -234,6 +275,8 @@
             function edit(data) {
                 document.getElementById("id_edit").value = data.id;
                 document.getElementById("total_harga").value = data.total_harga.toLocaleString('id-ID');
+                document.getElementById("bayar1").value = data.bayar.toLocaleString('id-ID');
+                document.getElementById("kembalian1").value = data.kembalian.toLocaleString('id-ID');
                 document.getElementById("total_harga1").value = parseInt(data.total_harga);
                 document.getElementById("kurang_bayar").value = data.kurang_bayar.toLocaleString('id-ID');
                 document.getElementById("kurang_bayar1").value = data.kurang_bayar.toLocaleString('id-ID');

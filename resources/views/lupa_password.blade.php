@@ -29,18 +29,16 @@
       <div class="login_wrapper">
         <div class="animate form login_form">
           <section class="login_content">
-            <form action="{{ route('postlogin') }}" method="post">
+            <form action="{{ route('actlupapassword') }}" method="post">
                 @csrf
-              <h1>Login Form</h1>
+              <h1>Lupa Password</h1>
               <div>
-                <input type="text" class="form-control" name="username" placeholder="Username" required="" />
+                <input type="email" class="form-control" name="email" placeholder="email" required />
               </div>
+            
               <div>
-                <input type="password" class="form-control" name="password" placeholder="Password" required="" />
-              </div>
-              <div>
-              <button type="submit" class="btn btn-primary submit">Login</button>
-                <a class="reset_pass" href="{{ route('lupapassword') }}">Lupa password?</a>
+              <button type="submit" class="btn btn-primary submit">kirim</button>
+                <a class="reset_pass" href="{{ route('login') }}">kembali login</a>
               </div>
 
               <div class="clearfix"></div>

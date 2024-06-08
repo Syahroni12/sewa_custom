@@ -5,6 +5,7 @@ use App\Http\Controllers\BarangController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\JenisBarang;
 use App\Http\Controllers\JenisBarangController;
+use App\Http\Controllers\PembukuanController;
 use App\Http\Controllers\PengeluaranController;
 use App\Http\Controllers\TransaksiController;
 use Illuminate\Support\Facades\Route;
@@ -26,14 +27,20 @@ Route::get('/', function () {
 
 
 Route::get('/login', [AuthController::class, 'login'])->name('login')->middleware('guest');
+Route::get('/lupapassword', [AuthController::class, 'lupapassword'])->name('lupapassword')->middleware('guest');
+Route::post('/actlupapassword', [AuthController::class, 'actlupapassword'])->name('actlupapassword')->middleware('guest');
+Route::get('/validasi-lupapassword/{token}', [AuthController::class, 'validasilupapassword'])->name('validasi-lupapassword')->middleware('guest');
+Route::get('/validasi-lupapassword/{token}', [AuthController::class, 'validasilupapassword'])->name('validasi-lupapassword')->middleware('guest');
+Route::post('/actvalidasi-lupapassword', [AuthController::class, 'actvalidasi-lupapassword'])->name('actvalidasi-lupapassword')->middleware('guest');
+Route::post('/resetpassword', [AuthController::class, 'resetpassword'])->name('resetpassword')->middleware('guest');
 Route::post('/postlogin', [AuthController::class, 'postlogin'])->name('postlogin');
-Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 Route::get('/logout', [AuthController::class, 'logout'])->name('logout')->middleware('auth');
 
 
 
 // Middleware to protect routes for authenticated users
 Route::middleware(['auth'])->group(function () {
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/jenisbarang', [JenisBarangController::class, 'index'])->name('JenisBarang');
     Route::post('/tambah_jenis', [JenisBarangController::class, 'tambahjenis'])->name('tambah_jenis');
     Route::post('/edit_jenis', [JenisBarangController::class, 'edit_jenis'])->name('edit_jenis');
@@ -65,6 +72,11 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/detail_transaksi_konfirmasi/{id}', [TransaksiController::class, 'detail_konfirmasi_pesanan'])->name('detail_transaksi_belumterkonfirmasi');
     Route::get('/detail_transaksi_barang/{id}', [TransaksiController::class, 'detail_konfirmasi_barang'])->name('detail_konfirmasi_barang');
     Route::post('/konfirmasi_pesanan', [TransaksiController::class, 'update_konfirmasi'])->name('konfirmasi_pesanan');
+    Route::post('/pengembalian_dan_bayar', [TransaksiController::class, 'pengembalian_dan_bayar'])->name('pengembalian_dan_bayar');
+    Route::get('/data_transaksi_sudahdikembalikan', [TransaksiController::class, 'data_sudahdikembalikan'])->name('data_transaksi_sudahdikembalikan');
+    Route::get('/barang_dikembalikan/{id}', [TransaksiController::class, 'barang_dikembalikan'])->name('barang_dikembalika');
+    Route::get('/pembukuan', [PembukuanController::class, 'index'])->name('pembukuan');
+    Route::get('/pembukuan/{tanggal_awal}/{tanggal_akhir}', [PembukuanController::class, 'cekpembukuan'])->name('cekpembukuan');
     
 
 
