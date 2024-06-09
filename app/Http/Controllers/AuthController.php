@@ -18,10 +18,10 @@ class AuthController extends Controller
     {
         return view('login');
     }
-public function lupapassword() {
-    return view('lupa_password');
-    
-}
+    public function lupapassword()
+    {
+        return view('lupa_password');
+    }
     public function postlogin(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -43,20 +43,24 @@ public function lupapassword() {
 
             if (Auth::attempt($credentials)) {
                 $request->session()->regenerate();
-Alert::success('Berhasil Login')->flash();
+                Alert::success('Berhasil Login')->flash();
                 return redirect()->intended('dashboard');
+            }else {
+                alert()->error('Gagal',"username atau password salah");
+            return redirect()->route('login'); 
             }
         } catch (\Throwable $th) {
             // dd("dsdsds");
             //throw $th;
             alert()->error('Gagal', $th->getMessage());
-            return back();
+            return redirect()->route('login');
             //     alert()->error('Gagal',"nis/nip atau password salah");
             // return back();
         }
     }
 
-    public function resetpassword(Request $request)  {
+    public function resetpassword(Request $request)
+    {
         $validator = Validator::make($request->all(), [
             'password' => 'required|min:8',
         ]);
@@ -66,12 +70,12 @@ Alert::success('Berhasil Login')->flash();
             return back()->withErrors($validator)->withInput();
         }
         // dd($request->token);
-        $token=PasswordResetToken::where('token', $request->token)->first();    
+        $token = PasswordResetToken::where('token', $request->token)->first();
         if (!$token) {
             Alert::error("Token Tidak Valid")->flash();
             return redirect()->route('login');
         }
-        $user=User::where('email', $token->email)->first();
+        $user = User::where('email', $token->email)->first();
         if (!$user) {
             Alert::error("email tidak di temukan")->flash();
             return redirect()->route('login');
@@ -80,9 +84,8 @@ Alert::success('Berhasil Login')->flash();
         $token->delete();
         Alert::success("Password Berhasil Di ubah, silahkan login dengan password baru")->flash();
         return redirect()->route('login');
-        
     }
-public function actlupapassword(Request $request)
+    public function actlupapassword(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'email' => 'required|email|exists:users,email',
@@ -94,18 +97,18 @@ public function actlupapassword(Request $request)
             return back()->withErrors($validator)->withInput();
         }
         $email = $request->email;
-        $token=\Str::random(60);
+        $token = \Str::random(60);
         PasswordResetToken::updateOrCreate([
             'email' => $email
-        ],[
+        ], [
             'email' => $email,
-            'token' =>$token,
+            'token' => $token,
             'created_at' => now(),
         ]);
-      
+
         try {
             //code...
-              Mail::to("$email")->send(new ResetPasswordMail($token));
+            Mail::to("$email")->send(new ResetPasswordMail($token));
         } catch (\Throwable $th) {
             Alert::error($th)->flash();
         }
@@ -113,13 +116,14 @@ public function actlupapassword(Request $request)
         return redirect()->route('lupapassword');
     }
 
-    public function validasilupapassword(Request $request,$token) {
-  $token = PasswordResetToken::where('token', $token)->first();
-$tokenn=$token->token;
+    public function validasilupapassword(Request $request, $token)
+    {
+        $token = PasswordResetToken::where('token', $token)->first();
+        $tokenn = $token->token;
         if (!$token) {
             return redirect()->route('lupapassword');
         }
-        return view('reset_password',compact('token','tokenn'));    
+        return view('reset_password', compact('token', 'tokenn'));
     }
     public function logout(Request $request)
     {
@@ -131,6 +135,4 @@ $tokenn=$token->token;
 
         return redirect()->route('login');
     }
-
- 
 }

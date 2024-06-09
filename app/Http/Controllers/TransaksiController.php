@@ -132,28 +132,28 @@ class TransaksiController extends Controller
     {
         $request->all();
         $bayar = 0;
-        $model_pembayaran=null;
+        $model_pembayaran = null;
+        $kurang_bayar = str_replace('.', '', $request->kurang_bayar);
         $transaksi = transaksi::find($request->id);
-        if (($request->bayar != null) && ($request->total_denda != null)) {
-            $model_pembayaran=$request->model_bayar;
+        if (($request->bayar != null) && ($kurang_bayar > 0)) {
+            $model_pembayaran = $request->model_bayar;
             $bayar = str_replace('.', '', $request->bayar);
             $total_denda = str_replace('.', '', $request->total_denda);
-            $kurang_bayar = str_replace('.', '', $request->kurang_bayar);
             if ($request->bukti_bayar != null) {
                 // dd("ddsds");
                 $validator = Validator::make($request->all(), [
                     // 'bayar' => 'required|min:0',
                     'kurang_bayar' => 'required|min:0',
-                    'total_denda' => 'required|min:0',
-                    'keterangan_denda' => 'required',
+                    // 'total_denda' => 'required|min:0',
+                    // 'keterangan_denda' => 'required',
                     'bukti_bayar' => 'required|image|mimes:jpeg,png,jpg,gif,pdf|max:2048',
                     'total_harga' => 'required|min:0',
                     'model_bayar' => 'required',
-    
+
                 ], [
                     'bukti_bayar.required' => 'Bukti bayar wajib diisi.',
                 ]);
-    
+
                 if ($validator->fails()) {
                     $messages = $validator->errors()->all();
                     Alert::error($messages)->flash();
@@ -162,16 +162,15 @@ class TransaksiController extends Controller
                 $fileName = time() . '.' . $request->file('bukti_bayar')->getClientOriginalExtension();
                 $request->file('bukti_bayar')->move(public_path('bukti_bayarr'), $fileName);
                 $transaksi->bukti_bayar2 = $fileName;
-                
             } else {
                 $validator = Validator::make($request->all(), [
                     'bayar' => 'required|min:0',
                     'kurang_bayar' => 'required|min:0',
                     'model_bayar' => 'required',
                     'total_harga' => 'required|min:0',
-    
+
                 ]);
-    
+
                 if ($validator->fails()) {
                     $messages = $validator->errors()->all();
                     Alert::error($messages)->flash();
@@ -183,12 +182,24 @@ class TransaksiController extends Controller
             }
         }
 
-       
-        
+
+
         $denda = 0;
         if ($request->total_denda != null) {
 
             $denda = str_replace('.', '', $request->total_denda);
+            $validator = Validator::make($request->all(), [
+                'total_denda' => 'required|min:0',
+                'keterangan_denda' => 'required|min:0',
+                
+
+            ]);
+
+            if ($validator->fails()) {
+                $messages = $validator->errors()->all();
+                Alert::error($messages)->flash();
+            }
+
         }
         $bayar = str_replace('.', '', $request->bayar);
 

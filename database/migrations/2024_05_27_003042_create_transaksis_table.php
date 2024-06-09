@@ -34,6 +34,10 @@ return new class extends Migration
             $table->enum("model_bayar",['cod','tf'])->nullable();
             // $table->string("bukti_bayar")->nullable();
             $table->string("bukti_bayar")->nullable();
+            $table->integer("bayar2")->nullable();
+            $table->enum("model_bayar2",['cod','tf'])->nullable();
+            // $table->string("bukti_bayar")->nullable();
+            $table->string("bukti_bayar2")->nullable();
             $table->integer("total_ongkir")->nullable();
             $table->timestamps();
         });
